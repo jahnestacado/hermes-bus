@@ -1,0 +1,23 @@
+{
+  "name": "hermes-bus",
+  "version": "0.0.1",
+  "description": "A joy to use message-bus",
+  "main": "hermes-bus.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "event",
+    "bus",
+    "mediator",
+    "observer",
+    "message",
+    "bus",
+    "event-bus",
+    "publisher",
+    "subscriber",
+    "mediator"
+  ],
+  "author": "Ioannis Tzanellis <ioannis.kiwe@gmail.com>",
+  "license": "MIT"
+}
