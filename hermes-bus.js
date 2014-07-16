@@ -1,7 +1,4 @@
 
-
-
-
 var observerBusLines = {
     default: []
 };
@@ -13,8 +10,7 @@ function createObserver(context, event, cb) {
         cb: cb,
         active: true
     }
-};
-
+}
 
 function emit(event, data) {
     var busline = getBusline(event);
@@ -23,6 +19,14 @@ function emit(event, data) {
             observerBusLines[busline][i].cb(data);
         }
     }
+}
+
+function getBusline(eventMsg) {
+    var busline = eventMsg.split('-')[0];
+    if (busline === "") {
+        busline = "default";
+    }
+    return busline;
 }
 
 function onEvent(context, event, cb) {
@@ -35,32 +39,26 @@ function onEvent(context, event, cb) {
     }
 }
 
-
-function getBusline(eventMsg) {
-    var busline = eventMsg.split('-')[0];
-    if (busline === "") {
-        return "default"
-    }
-    return busline;
-}
-
-
 function deactivate(context) {
-    onContextFound(context, false);
+    onContextFound(context, function(con) {
+        con.active = false;
+    });
 }
 
-function reactivate(context) {
-    onContextFound(context, true);
-}
-
-function onContextFound(context, flag) {
+function onContextFound(context, cb) {
     var keys = Object.keys(observerBusLines);
     keys.forEach(function(key) {
         for (var i = 0; i <= observerBusLines[key].length - 1; i++) {
             if (observerBusLines[key][i].context === context) {
-                observerBusLines[key][i].active = flag;
+                cb(observerBusLines[key][i]);
             }
         }
+    });
+}
+
+function reactivate(context) {
+    onContextFound(context, function(con) {
+        con.active = true;
     });
 }
 
