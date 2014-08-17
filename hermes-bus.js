@@ -23,7 +23,7 @@ function emit(event, data) {
 
 function getBusline(eventMsg) {
     var busline = eventMsg.split('-')[0];
-    if (busline === "") {
+    if (busline === "" || busline[0] !== '#') {
         busline = "default";
     }
     return busline;
