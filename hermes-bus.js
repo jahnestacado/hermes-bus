@@ -59,8 +59,9 @@ function eventHandlerBuilder(moduleContext, namespaceInfos) {
     
     function createNamespace(context, element) {
         if (namespaceElements.length === 0) {
-            context[element] = getEventHandler(namespaceInfos.busline, namespaceInfos.event);
-            exportsBuilder[element] = context[element];
+            var functionName = "emit" + element.charAt(0).toUpperCase() + element.slice(1);
+            context[functionName] = getEventHandler(namespaceInfos.busline, namespaceInfos.event);
+            exportsBuilder[functionName] = context[functionName];
         } else {
             if (!context[element]) {
                 context[element] = {};
