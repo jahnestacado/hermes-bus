@@ -3,74 +3,55 @@ var observerBusLines = {
     main: []
 };
 
-function createObserver(context, event, cb) {
+function createObserver(event, cb) {
     return {
-        context: context,
         event: event,
         cb: cb,
+        filename: "Unknown",
         active: true
     }
 }
 
-
 function getBusline(eventMsg) {
     var busline = eventMsg.split('-')[0];
-    if (busline === "" || busline[0] !== '#') {
-        busline = "#main";
+    if (busline !== "" && busline[0] === '#') {
+        return busline.slice(1);
     }
-    return busline.slice(1);
+    return  busline = "main";
 }
 
+function getEventInfoHolder(event) {
+    var holder = {};
+    holder.busline = getBusline(event);
 
-function onEvent(context, event, cb) {
-    var busline = getBusline(event);
-    if (busline !== "main") {
-        event = event.split('-')[1];
-    }
-    if (observerBusLines[busline]) {
-        observerBusLines[busline].push(createObserver(context, event, cb));
-        eventHandlerBuilder(this, getNamespaceInfo(busline, event));
-    }
-    else {
-        observerBusLines[busline] = [createObserver(context, event, cb)];
-        eventHandlerBuilder(this, getNamespaceInfo(busline, event));
-    }
-}
-
-
-function getNamespaceInfo(busline, event) {
-    var infoHolder = {};
-    infoHolder.busline = busline;
-    infoHolder.event = event;
-    infoHolder.namespaceElements = []
-
-    if (busline === "main") {
-        infoHolder.namespaceElements.push(event);
+    if (holder.busline !== "main") {
+        holder.event = event.split('-')[1];
     } else {
-        infoHolder.namespaceElements = [busline, event];
+        holder.event = event;
     }
 
-    return infoHolder;
+    return holder;
 }
 
-function eventHandlerBuilder(moduleContext, namespaceInfos) {
-    var exportsBuilder = exports;
-    var namespaceElements = namespaceInfos.namespaceElements;
-    
-    function createNamespace(context, element) {
-        if (namespaceElements.length === 0) {
-            var functionName = "emit" + element.charAt(0).toUpperCase() + element.slice(1);
-            context[functionName] = getEventHandler(namespaceInfos.busline, namespaceInfos.event);
-            exportsBuilder[functionName] = context[functionName];
-        } else {
-            if (!context[element]) {
-                context[element] = {};
-            }
-            exportsBuilder = exportsBuilder[element];
-            createNamespace(context[element], namespaceElements.shift());
+function onEvent(event, cb) {
+    var eventInfoHolder = getEventInfoHolder(event);
+    var busline = eventInfoHolder.busline;
+    event = eventInfoHolder.event;
+
+    var observer = createObserver(event, cb);
+    if (observerBusLines[busline]) {
+        observerBusLines[busline].push(observer);
+        buildNamespace(busline, event);
+    } else {
+        observerBusLines[busline] = [observer];
+        buildNamespace(busline, event);
+    }
+
+    return {
+        registerLocation: function(path) {
+            observer.filename = path;
         }
     }
-    createNamespace(moduleContext, namespaceElements.shift())
 }
 
 function getEventHandler(busline, event) {
@@ -83,30 +64,57 @@ function getEventHandler(busline, event) {
     }
 }
 
-function deactivate(context) {
-    onContextFound(context, function(con) {
-        con.active = false;
-    });
-}
-
-function onContextFound(context, cb) {
-    var keys = Object.keys(observerBusLines);
-    keys.forEach(function(key) {
-        for (var i = 0; i <= observerBusLines[key].length - 1; i++) {
-            if (observerBusLines[key][i].context === context) {
-                cb(observerBusLines[key][i]);
-            }
+function buildNamespace(busline, event) {
+    var exportedNamespace = exports;
+    if (busline !== 'main') {                                                                                                                                  
+        if (!exportedNamespace[busline]) {
+            exportedNamespace[busline] = {};
+            exportedNamespace[busline].getStateReport = buildReporter(busline);
+            exportedNamespace[busline].activateEvent = buildStatusSwitch(busline, true);
+            exportedNamespace[busline].deactivateEvent = buildStatusSwitch(busline, false);
         }
-    });
+        exportedNamespace = exportedNamespace[busline];
+    } else {
+        exportedNamespace.activateEvent = buildStatusSwitch(busline, true);
+        exportedNamespace.deactivateEvent = buildStatusSwitch(busline, false);
+    }
+
+    var functionName = "emit" + event.charAt(0).toUpperCase() + event.slice(1);
+    exportedNamespace[functionName] = getEventHandler(busline, event);
 }
 
-function reactivate(context) {
-    onContextFound(context, function(con) {
-        con.active = true;
-    });
+function buildStatusSwitch(busline, enabled) {
+    return function(event) {
+        observerBusLines[busline].forEach(function(observer) {
+            if (observer.event === event) {
+                observer.active = enabled;
+            }
+        });
+    }
 }
 
+function buildReporter(busline) {
+    return function() {
+        var report = charAppender('*', busline.length + 14) + '\n' + "*" + "  Busline: " + busline + "  *" + '\n' + charAppender('*', busline.length + 14) + '\n\n';
+        var counter = 0;
+        observerBusLines[busline].forEach(function(observer) {
+            report += "#" + ++counter + charAppender('-', 5) + '\n' +
+                    "Location: " + observer.filename + '\n' +
+                    "Event: " + observer.event + '\n' +
+                    "Active: " + observer.active + '\n' +
+                    "Callback: " + observer.cb + '\n\n';
+        });
+        return report;
+    }
+}
+
+function charAppender(char, times) {
+    var string = char;
+    for (var i = 1; i <= times; i++) {
+        string += char;
+    }
+    return string;
+}
 
 exports.onEvent = onEvent;
-exports.reactivate = reactivate;
-exports.deactivate = deactivate;
+exports.getStateReport = buildReporter("main");
