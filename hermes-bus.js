@@ -7,7 +7,7 @@ function createObserver(event, cb) {
     return {
         event: event,
         cb: cb,
-        filename: "Unknown",
+        location: "Unknown",
         active: true
     }
 }
@@ -20,24 +20,12 @@ function getBusline(eventMsg) {
     return  busline = "main";
 }
 
-function getEventInfoHolder(event) {
-    var holder = {};
-    holder.busline = getBusline(event);
-
-    if (holder.busline !== "main") {
-        holder.event = event.split('-')[1];
-    } else {
-        holder.event = event;
+function onEvent(busline, event, cb) {
+    if (typeof (busline) !== typeof (event)) {
+        cb = event;
+        event = busline;
+        busline = 'main';
     }
-
-    return holder;
-}
-
-function onEvent(event, cb) {
-    var eventInfoHolder = getEventInfoHolder(event);
-    var busline = eventInfoHolder.busline;
-    event = eventInfoHolder.event;
-
     var observer = createObserver(event, cb);
     if (observerBusLines[busline]) {
         observerBusLines[busline].push(observer);
@@ -49,24 +37,24 @@ function onEvent(event, cb) {
 
     return {
         registerLocation: function(path) {
-            observer.filename = path;
+            observer.location = path;
         }
     }
 }
 
 function getEventHandler(busline, event) {
     return function(data) {
-        for (var i = 0; i <= observerBusLines[busline].length - 1; i++) {
-            if (observerBusLines[busline][i].event === event && observerBusLines[busline][i].active === true) {
-                observerBusLines[busline][i].cb(data);
+        observerBusLines[busline].forEach(function(element) {
+            if (element.event === event && element.active === true) {
+                element.cb(data);
             }
-        }
+        });
     }
 }
 
 function buildNamespace(busline, event) {
     var exportedNamespace = exports;
-    if (busline !== 'main') {                                                                                                                                  
+    if (busline !== 'main') {
         if (!exportedNamespace[busline]) {
             exportedNamespace[busline] = {};
             exportedNamespace[busline].getStateReport = buildReporter(busline);
@@ -99,7 +87,7 @@ function buildReporter(busline) {
         var counter = 0;
         observerBusLines[busline].forEach(function(observer) {
             report += "#" + ++counter + charAppender('-', 5) + '\n' +
-                    "Location: " + observer.filename + '\n' +
+                    "Location: " + observer.location + '\n' +
                     "Event: " + observer.event + '\n' +
                     "Active: " + observer.active + '\n' +
                     "Callback: " + observer.cb + '\n\n';
