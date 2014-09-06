@@ -2,7 +2,7 @@
   "name": "hermes-bus",
   "version": "0.0.1",
   "description": "A joy to use message-bus",
-  "main": "hermes-bus.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,6 +18,11 @@
     "subscriber",
     "mediator"
   ],
-  "author": "Ioannis Tzanellis <ioannis.kiwe@gmail.com>",
+  "author": "Ioannis Tzanellis <ioannis.tzanellis@aimms.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jahnestacado/hermes-bus"
+  },
   "license": "MIT"
+ 
 }
