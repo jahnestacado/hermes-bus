@@ -18,6 +18,9 @@
     "subscriber",
     "mediator"
   ],
+  "dependencies": {
+    "q": "1.0.1"
+  },
   "author": "Ioannis Tzanellis <ioannis.tzanellis@aimms.com>",
   "repository": {
     "type": "git",
