@@ -21,6 +21,9 @@
   "dependencies": {
     "q": "1.0.1"
   },
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
   "author": "Ioannis Tzanellis <ioannis.tzanellis@aimms.com>",
   "repository": {
     "type": "git",
