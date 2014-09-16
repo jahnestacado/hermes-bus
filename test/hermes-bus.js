@@ -58,13 +58,13 @@ describe('integration tests for hermes-bus module', function() {
 
                 describe('create "red busline" ', function() {
                     var thirdCallback = sinon.spy();
-                    bus.onEvent("red", "thirdEvent", thirdCallback);
+                    bus.onEvent("red", "firstEvent", thirdCallback);
 
-                    describe('invocation of bus.red.emitThirdEvent', function() {
+                    describe('invocation of bus.red.emitFirstEvent', function() {
                         var dummyObject3 = {isDummy: true};
 
                         before(function() {
-                            bus.red.emitThirdEvent(dummyObject3);
+                            bus.red.emitFirstEvent(dummyObject3);
                         });
 
                         it('should invoke thirdCallback once', function() {
@@ -86,8 +86,8 @@ describe('integration tests for hermes-bus module', function() {
                         describe('disable and emit thirdEvent of "red" busline', function() {
 
                             before(function() {
-                                bus.red.deactivateEvent("thirdEvent");
-                                bus.red.emitThirdEvent();
+                                bus.red.deactivateEvent("firstEvent");
+                                bus.red.emitFirstEvent();
                             });
 
                             it('should not invoke thirdCallback again', function() {
@@ -106,7 +106,7 @@ describe('integration tests for hermes-bus module', function() {
 
                                 before(function() {
                                     bus.red.activateEvent("thirdEvent");
-                                    bus.red.emitThirdEvent();
+                                    bus.red.emitFirstEvent();
                                 });
 
                                 it('should invoke thirdCallback for second time', function() {
