@@ -8,79 +8,83 @@ var assert = require("assert");
 var bus = require("./..");
 var sinon = require("sinon");
 
-describe('integration tests for hermes-bus module', function() {
+describe('#################### Start integration tests for hermes-bus module \n', function() {
 
     describe("emit events", function() {
 
-        var firstCallback = sinon.spy();
-        var secondCallback = sinon.spy();
+        var firstEventCallback = sinon.spy();
+        var secondEventCallback = sinon.spy();
 
-        bus.onEvent("firstEvent", firstCallback);
-        bus.onEvent("secondEvent", secondCallback);
+        bus.onEvent("firstEvent", firstEventCallback);
+        bus.onEvent("secondEvent", secondEventCallback);
 
         describe('invocation of bus.emitFirstEvent', function() {
-            var dummyObject = {isDummy: true};
+            var firstEventArg1 = {isDummy: true};
+            var firstEventArg2 = "frrrrr";
+            var firstEventArg3 = 639;
+
 
             before(function() {
-                bus.emitFirstEvent(dummyObject);
+                bus.emitFirstEvent(firstEventArg1, firstEventArg2, firstEventArg3);
             });
 
             it('should invoke firstCallback once', function() {
-                assert(firstCallback.calledOnce);
+                assert(firstEventCallback.calledOnce);
             });
 
             it("should invoke firstCallback with the right argument", function() {
-                assert(firstCallback.calledWith(dummyObject));
+                assert(firstEventCallback.calledWith(firstEventArg1, firstEventArg2, firstEventArg3));
             });
 
             it('should not invoke secondCallback', function() {
-                assert(firstCallback.calledOnce, false);
+                assert(firstEventCallback.calledOnce, false);
             });
 
             describe('invocation of bus.emitSecondEvent', function() {
-                var dummyObject2 = {isDummy: true};
+                var secondEventArg1 = {isDummy: true};
+                var secondEventArg2 = [3, 5, 6, ["4"]];
 
                 before(function() {
-                    bus.emitSecondEvent(dummyObject);
+                    bus.emitSecondEvent(firstEventArg1, secondEventArg2);
                 });
 
                 it('should invoke secondCallback once', function() {
-                    assert(secondCallback.calledOnce);
+                    assert(secondEventCallback.calledOnce);
                 });
 
                 it("should invoke secondCallback with the right argument", function() {
-                    assert(secondCallback.calledWith(dummyObject2));
+                    assert(secondEventCallback.calledWith(secondEventArg1, secondEventArg2));
                 });
 
                 it('should not invoke firstCallback again', function() {
-                    assert(firstCallback.calledOnce);
+                    assert(firstEventCallback.calledOnce);
                 });
 
                 describe('create "red busline" ', function() {
-                    var thirdCallback = sinon.spy();
-                    bus.onEvent("red", "firstEvent", thirdCallback);
+                    var thirdEventCallback = sinon.spy();
+                    bus.onEvent("red", "firstEvent", thirdEventCallback);
 
                     describe('invocation of bus.red.emitFirstEvent', function() {
-                        var dummyObject3 = {isDummy: true};
+                        var thirdEventArg1 = {isDummy: true};
 
                         before(function() {
-                            bus.red.emitFirstEvent(dummyObject3);
+                            bus.red.emitFirstEvent(thirdEventArg1);
                         });
 
                         it('should invoke thirdCallback once', function() {
-                            assert(thirdCallback.calledOnce);
+                            assert(thirdEventCallback.calledOnce);
                         });
 
                         it("should invoke thirdCallback with the right argument", function() {
-                            assert(thirdCallback.calledWith(dummyObject3));
+                            assert(thirdEventCallback.calledWith(thirdEventArg1));
                         });
 
                         it('should not invoke firstCallback again', function() {
-                            assert(firstCallback.calledOnce);
+                            assert(firstEventCallback.calledOnce);
                         });
 
                         it('should not invoke secondCallback again', function() {
-                            assert(secondCallback.calledOnce);
+                            assert(secondEventCallback.calledOnce);
                         });
 
                         describe('disable and emit thirdEvent of "red" busline', function() {
@@ -91,15 +95,15 @@ describe('integration tests for hermes-bus module', function() {
                             });
 
                             it('should not invoke thirdCallback again', function() {
-                                assert(thirdCallback.calledOnce);
+                                assert(thirdEventCallback.calledOnce);
                             });
 
                             it('should not invoke firstCallback again', function() {
-                                assert(firstCallback.calledOnce);
+                                assert(firstEventCallback.calledOnce);
                             });
 
                             it('should not invoke secondCallback again', function() {
-                                assert(secondCallback.calledOnce);
+                                assert(secondEventCallback.calledOnce);
                             });
 
                             describe('re-enable and emit thirdEvent of "red" busline', function() {
@@ -110,15 +114,15 @@ describe('integration tests for hermes-bus module', function() {
                                 });
 
                                 it('should invoke thirdCallback for second time', function() {
-                                    assert(thirdCallback.callCount, 2);
+                                    assert(thirdEventCallback.callCount, 2);
                                 });
 
                                 it('should not invoke firstCallback again', function() {
-                                    assert(firstCallback.calledOnce);
+                                    assert(firstEventCallback.calledOnce);
                                 });
 
                                 it('should not invoke secondCallback again', function() {
-                                    assert(secondCallback.calledOnce);
+                                    assert(secondEventCallback.calledOnce);
                                 });
 
                             });
@@ -137,57 +141,93 @@ describe('integration tests for hermes-bus module', function() {
                 return Math.floor(Math.random() * (max - min + 1)) + min;
             }
 
-            function cbAdd(a, b) {
+            function addCb(a, b) {
                 return a + b;
             }
-            function cbMul(a, b) {
+            function mulCb(a, b) {
                 return a * b;
             }
 
-            function cbDiv(a, b) {
+            function divCb(a, b) {
                 return a / b;
             }
 
 
             function getDelayedAsyncFunc(cb, delay) {
-                return    function asyncFunc(arg, resolve) {
+                return    function asyncFunc(a, b, resolve) {
                     setTimeout(function() {
-                        resolve(cb(arg.a, arg.b));
+                        resolve(cb(a, b));
                     }, delay);
                 }
             }
 
-            bus.onEvent("syncLine", "forthEvent", getDelayedAsyncFunc(cbAdd, getRandomInt(500)));
-            bus.onEvent("syncLine", "forthEvent", getDelayedAsyncFunc(cbMul, getRandomInt(500)));
-            bus.onEvent("syncLine", "forthEvent", getDelayedAsyncFunc(cbDiv, getRandomInt(500)));
+            var firstEventCallback = sinon.spy(getDelayedAsyncFunc(addCb, getRandomInt(500)));
+            var secondEventCallback = sinon.spy(getDelayedAsyncFunc(mulCb, getRandomInt(500)));
+            var thirdEventCallback = sinon.spy(getDelayedAsyncFunc(divCb, getRandomInt(500)));
+
+
+
+            bus.onEvent("syncLine", "forthEvent", firstEventCallback);
+            bus.onEvent("syncLine", "forthEvent", secondEventCallback);
+            bus.onEvent("syncLine", "forthEvent", thirdEventCallback);
 
             describe('invocation of bus.syncLine.resolveForthEvent with use of .then()', function() {
-                var dummyObject4 = {a: 566, b: 5};
+                var a = 566;
+                var b = 5;
                 var results;
                 before(function(done) {
-                    bus.syncLine.resolveForthEvent(dummyObject4)
+                    bus.syncLine.resolveForthEvent(a, b)
                             .then(function(output) {
                                 results = output;
                                 done();
                             });
                 });
 
+                it('should invoke firstEventCallback once', function() {
+                    assert(firstEventCallback.calledOnce);
+                });
+
+
+                it('should invoke firstEventCallback once', function() {
+                    assert(secondEventCallback.calledOnce);
+                });
+
+                it('should invoke firstEventCallback once', function() {
+                    assert(thirdEventCallback.calledOnce);
+                });
+
+                it("should invoke firstEventCallback with the right arguments", function() {
+                    assert(firstEventCallback.calledWith(a, b));
+                });
+
+                it("should invoke secondEventCallback with the right arguments", function() {
+                    assert(secondEventCallback.calledWith(a, b));
+                });
+
+                it("should invoke thirdEventCallback with the right arguments", function() {
+                    assert(thirdEventCallback.calledWith(a, b));
+                });
+
                 it('first element of "results" should be equal to 571', function() {
-                    assert(results[0], '571');
+                    assert.equal(results[0], 571);
                 });
 
                 it('second element of "results" should be equal to 2830', function() {
-                    assert(results[1], '2830');
+                    assert.equal(results[1], '2830');
                 });
 
                 it('first element of "results" should be equal to 113.2', function() {
-                    assert(results[2], '113.2');
+                    assert.equal(results[2], '113.2');
                 });
 
             });
 
         });
 
+    });
+    
+    after(function(){
+       console.log("\n  #################### End of integration tests for hermes-bus module"); 
     });
 
 });
