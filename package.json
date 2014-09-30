@@ -4,7 +4,9 @@
   "description": "A joy to use message-bus",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec"
+    "test": "mocha --reporter spec",
+    "test-on-travis": "./node_modules/.bin/istanbul cover --report lcovonly ./node_modules/.bin/_mocha",
+    "upload-to-coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "keywords": [
     "event",
@@ -22,7 +24,9 @@
     "q": "1.0.1"
   },
   "devDependencies": {
+    "coveralls": "^2.11.2",
     "mocha": "1.21.4",
+    "mocha-lcov-reporter": "0.0.1",
     "sinon": "1.10.3"
   },
   "author": "Ioannis Tzanellis <ioannis.tzanellis@aimms.com>",

@@ -4,3 +4,6 @@ node_js:
   - "0.10"
 
 install: npm install
+script: npm run-script test-on-travis
+after_success:
+  - npm run-script upload-to-coveralls
