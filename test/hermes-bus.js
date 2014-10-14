@@ -23,7 +23,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
             var firstEventArg2 = "frrrrr";
             var firstEventArg3 = 639;
 
-
             before(function() {
                 bus.emitFirstEvent(firstEventArg1, firstEventArg2, firstEventArg3);
             });
@@ -109,12 +108,12 @@ describe('#################### Start integration tests for hermes-bus module \n'
                             describe('re-enable and emit thirdEvent of "red" busline', function() {
 
                                 before(function() {
-                                    bus.red.activateEvent("thirdEvent");
+                                    bus.red.activateEvent("firstEvent");
                                     bus.red.emitFirstEvent();
                                 });
 
                                 it('should invoke thirdCallback for second time', function() {
-                                    assert(thirdEventCallback.callCount, 2);
+                                    assert(thirdEventCallback.calledTwice);
                                 });
 
                                 it('should not invoke firstCallback again', function() {
@@ -123,6 +122,35 @@ describe('#################### Start integration tests for hermes-bus module \n'
 
                                 it('should not invoke secondCallback again', function() {
                                     assert(secondEventCallback.calledOnce);
+                                });
+
+                            });
+
+                            describe('invoke destroy on "red" busline', function() {
+
+                                before(function() {
+                                    bus.red.destroy();
+                                });
+
+                                it('should destroy "red" busline ', function() {
+                                    assert.equal(bus.red, undefined);
+                                });
+
+
+                                describe('invoke destroy on "main" busline', function() {
+
+                                    before(function() {
+                                        bus.destroy();
+                                    });
+
+                                    it('should destroy emitFirstEvent on "main" busline ', function() {
+                                        assert.equal(bus.emitFirstEvent, undefined);
+                                    });
+
+                                    it('should destroy emitSecondEvent on "main" busline', function() {
+                                        assert.equal(bus.emitSecondEvent, undefined);
+                                    });
+
                                 });
 
                             });
@@ -225,9 +253,9 @@ describe('#################### Start integration tests for hermes-bus module \n'
         });
 
     });
-    
-    after(function(){
-       console.log("\n  #################### End of integration tests for hermes-bus module"); 
+
+    after(function() {
+        console.log("\n  #################### End of integration tests for hermes-bus module");
     });
 
 });
