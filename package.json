@@ -1,6 +1,6 @@
 {
   "name": "hermes-bus",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "description": "A joy to use message-bus",
   "main": "index.js",
   "scripts": {
