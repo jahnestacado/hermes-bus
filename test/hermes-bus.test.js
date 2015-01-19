@@ -283,11 +283,11 @@ describe('#################### Start integration tests for hermes-bus module \n'
                     });
 
                     it('second element of "results" should be equal to 2830', function() {
-                        assert.equal(results[1], '2830');
+                        assert.equal(results[1], 2830);
                     });
 
                     it('first element of "results" should be equal to 113.2', function() {
-                        assert.equal(results[2], '113.2');
+                        assert.equal(results[2], 113.2);
                     });
 
                 });
