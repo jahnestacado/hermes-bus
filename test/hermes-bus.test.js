@@ -10,7 +10,7 @@ var sinon = require("sinon");
 
 describe('#################### Start integration tests for hermes-bus module \n', function() {
 
-    describe("request events", function() {
+    describe("trigger events", function() {
 
         var firstEventCallback = sinon.spy();
         var secondEventCallback = sinon.spy();
@@ -18,13 +18,13 @@ describe('#################### Start integration tests for hermes-bus module \n'
         bus.on("firstEvent", firstEventCallback);
         bus.on("secondEvent", secondEventCallback);
 
-        describe("when invoking bus.requestFirstEvent", function() {
+        describe("when invoking bus.triggerFirstEvent", function() {
             var firstEventArg1 = {isDummy: true};
             var firstEventArg2 = "foo";
             var firstEventArg3 = 639;
 
             before(function() {
-                bus.requestFirstEvent(firstEventArg1, firstEventArg2, firstEventArg3);
+                bus.triggerFirstEvent(firstEventArg1, firstEventArg2, firstEventArg3);
             });
 
             it("should invoke firstCallback once", function() {
@@ -39,12 +39,12 @@ describe('#################### Start integration tests for hermes-bus module \n'
                 assert(firstEventCallback.calledOnce, false);
             });
 
-            describe("when invoking bus.requestSecondEvent", function() {
+            describe("when invoking bus.triggerSecondEvent", function() {
                 var secondEventArg1 = {isDummy: true};
                 var secondEventArg2 = [3, 5, 6, ["4"]];
 
                 before(function() {
-                    bus.requestSecondEvent(firstEventArg1, secondEventArg2);
+                    bus.triggerSecondEvent(firstEventArg1, secondEventArg2);
                 });
 
                 it("should invoke secondCallback once", function() {
@@ -66,11 +66,11 @@ describe('#################### Start integration tests for hermes-bus module \n'
                         bus.on("red", "firstEvent", thirdEventCallback);
                     });
 
-                    describe("when invoking bus.red.requestFirstEvent", function() {
+                    describe("when invoking bus.red.triggerFirstEvent", function() {
                         var thirdEventArg1 = {isDummy: true};
 
                         before(function() {
-                            bus.red.requestFirstEvent(thirdEventArg1);
+                            bus.red.triggerFirstEvent(thirdEventArg1);
                         });
 
                         it("should invoke thirdCallback once", function() {
@@ -89,11 +89,11 @@ describe('#################### Start integration tests for hermes-bus module \n'
                             assert(secondEventCallback.calledOnce);
                         });
 
-                        describe("when disabling and requesting thirdEvent of 'red' busline", function() {
+                        describe("when disabling and triggering thirdEvent of 'red' busline", function() {
 
                             before(function() {
                                 bus.red.deactivateEvent("firstEvent");
-                                bus.red.requestFirstEvent();
+                                bus.red.triggerFirstEvent();
                             });
 
                             it("should not invoke thirdCallback again", function() {
@@ -108,11 +108,11 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                 assert(secondEventCallback.calledOnce);
                             });
 
-                            describe("when re-enabling and requesting thirdEvent of 'red' busline", function() {
+                            describe("when re-enabling and triggering thirdEvent of 'red' busline", function() {
 
                                 before(function() {
                                     bus.red.activateEvent("firstEvent");
-                                    bus.red.requestFirstEvent();
+                                    bus.red.triggerFirstEvent();
                                 });
 
                                 it("should invoke thirdCallback for second time", function() {
@@ -152,12 +152,12 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                         bus.reset();
                                     });
 
-                                    it("should not have requestFirstEvent function on 'main' busline", function() {
-                                        assert.equal(bus.requestFirstEvent, undefined);
+                                    it("should not have triggerFirstEvent function on 'main' busline", function() {
+                                        assert.equal(bus.triggerFirstEvent, undefined);
                                     });
 
-                                    it("should not have requestSecondEvent function on 'main' busline", function() {
-                                        assert.equal(bus.requestSecondEvent, undefined);
+                                    it("should not have triggerSecondEvent function on 'main' busline", function() {
+                                        assert.equal(bus.triggerSecondEvent, undefined);
                                     });
 
                                     it("should maintain 'red' busline", function() {
@@ -202,10 +202,10 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                                     assert.equal(dummyEventCallback.called, false);
                                                 });
 
-                                                describe("when requestting 'dummyEvent' message on 'green' busline ", function() {
+                                                describe("when triggering 'dummyEvent' message on 'green' busline ", function() {
 
                                                     before(function() {
-                                                        bus.green.requestDummyEvent();
+                                                        bus.green.triggerDummyEvent();
                                                     });
 
                                                     it("should invoke 'dummyEventCallback' only once", function() {
@@ -327,7 +327,7 @@ describe('#################### Start integration tests for hermes-bus module \n'
         });
 
         after(function() {
-            console.log("\n  #################### End of integration tests for hermes-bus module");
+            console.log("\n  #################### End of integration tests for hermes-bus module.");
         });
     });
 });
