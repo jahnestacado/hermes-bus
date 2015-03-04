@@ -92,7 +92,7 @@ describe('#################### Start integration tests for hermes-bus module \n'
                         describe("when disabling and triggering thirdEvent of 'red' busline", function() {
 
                             before(function() {
-                                bus.red.deactivateEvent("firstEvent");
+                                bus.red.deactivate("firstEvent");
                                 bus.red.triggerFirstEvent();
                             });
 
@@ -111,7 +111,7 @@ describe('#################### Start integration tests for hermes-bus module \n'
                             describe("when re-enabling and triggering thirdEvent of 'red' busline", function() {
 
                                 before(function() {
-                                    bus.red.activateEvent("firstEvent");
+                                    bus.red.activate("firstEvent");
                                     bus.red.triggerFirstEvent();
                                 });
 
