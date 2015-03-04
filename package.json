@@ -9,16 +9,15 @@
     "upload-to-coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "keywords": [
-    "event",
+    "event emitter",
     "bus",
     "mediator",
     "observer",
     "message",
-    "bus",
     "event-bus",
     "publisher",
     "subscriber",
-    "mediator"
+    "pub/sub"
   ],
   "dependencies": {
     "q": "1.0.1"
