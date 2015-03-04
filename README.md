@@ -31,8 +31,9 @@ We can trigger the "start" event on the main "busline" by calling:
     //"start" event is already registered on the main "busline"
     bus.triggerStart(data0,...,dataN);
 ```
-The above code will invoke the callback function of the "start" event with the passed arguments (e.g data0,...,dataN).   
-Note that the event-name is camelCased!
+The above code will invoke the callback function of the "start" event with the passed arguments (e.g data0,...,dataN).  
+
+_Note that the event-name is camelCased!_
 
 #####Events on custom "buslines"
 ---
