@@ -13,11 +13,12 @@
     "bus",
     "mediator",
     "observer",
-    "message",
+    "messagebus",
     "event-bus",
     "publisher",
     "subscriber",
-    "pub/sub"
+    "pub/sub",
+    "message-bus"
   ],
   "dependencies": {
     "q": "1.0.1"
