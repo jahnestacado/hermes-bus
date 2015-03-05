@@ -141,7 +141,7 @@ We can register events that can be "triggered" and "resolved" using the same cod
  `event`: The registered event on the busline.   
  `callback(arguments, resolve)`: The callback function that is attached to registered event.  
  * `arguments`: Arguments that are passed from the _"triggerEvent"_ and/or _"resolveEvent"_ hermes-bus functions. An event should be always triggered/resolved with the same number of arguments.    
-   `resolve`: (**optional**) Function that is available as the last argument of the callback and should be used for hermes-bus __"resolved"__ events. Call that function inside your "onDone" callback of your asynchronous code.
+   `resolve`: (**optional**) Function that is available as the last argument of the callback and should be used for hermes-bus _"resolved"_ events. Call that function inside your "onDone" callback of your asynchronous code.
 If you both _"trigger"_ and _"resolve"_ the same event the _resolve_ function should be always invoked.   
 * * `scope`: Main "busline".    <br/>                 
 
