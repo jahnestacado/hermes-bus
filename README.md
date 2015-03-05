@@ -145,17 +145,17 @@ We can register events that can be "triggered" and "resolved" using the same cod
 `scope`: All "buslines"  
   
 * `bus[busline].destroy()`: Destroys custom busline  
-`scope`: Only custom "buslines"
+`scope`: Custom "buslines" only
 
 * `bus.reset()`: Resets main "busline". This doesn't affect registered custom "buslines"  
-`scope`: Only main "busline"
+`scope`: Main "busline"
 
 * `bus.hardReset()`: Resets main "busline" and destroys all registered custom "buslines"  
-`scope`: Only main "busline"
+`scope`: Main "busline"
 
 * `bus.require(module0,..,moduleN)`: Loads modules and registers their hermes-bus events in the specified order  
 `module0,..,moduleN`: Module absolute paths or relative to the root directory of the project.  
-`scope`: Only main "busline"  
+`scope`: Main "busline"  
   
 ##Test
  Run the tests
@@ -166,22 +166,3 @@ We can register events that can be "triggered" and "resolved" using the same cod
 ##License
 Copyright (c) 2014 Ioannis Tzanellis<br>
 [Released under the MIT license](https://github.com/jahnestacado/hermes-bus/blob/master/LICENSE) 
-  
-  
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
