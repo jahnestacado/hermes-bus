@@ -136,26 +136,35 @@ We can register events that can be "triggered" and "resolved" using the same cod
   
 ##API
 ---
-* `bus.deactivate(event)`: Deactivates a registered event on a busline  
+* `bus.on(busline, event, callback)`: Registers an event on a busline.  
+ `busline`: (**optional**) Defines the busline on which the event will be registered. (By default uses main "busline").  
+ `event`: The registered event on the busline.   
+ `callback(arguments, resolve)`: The callback function that is attached to registered event.  
+ * `arguments`: Arguments that are passed from the _"triggerEvent"_ and/or _"resolveEvent"_ hermes-bus functions. An event should be always triggered/resolved with the same number of arguments.    
+   `resolve`: (**optional**) Function that is available as the last argument of the callback and should be used for hermes-bus __"resolved"__ events. Call that function inside your "onDone" callback of your asynchronous code.
+If you both _"trigger"_ and _"resolve"_ the same event the _resolve_ function should be always invoked.   
+* * `scope`: Main "busline".    <br/>                 
+
+* `bus.deactivate(event)`: Deactivates a registered event on a busline.  
  `event`: The event to deactivate.  
- `scope`: All "buslines"  
+ `scope`: All "buslines".  
 
-* `bus.activate(event)`: Activates an a registered event on a busline  
+* `bus.activate(event)`: Activates an a registered event on a busline.  
 `event`: The event to deactivate.  
-`scope`: All "buslines"  
+`scope`: All "buslines".  
   
-* `bus[busline].destroy()`: Destroys custom busline  
-`scope`: Custom "buslines" only
+* `bus[busline].destroy()`: Destroys custom busline.  
+`scope`: Custom "buslines" only.
 
-* `bus.reset()`: Resets main "busline". This doesn't affect registered custom "buslines"  
-`scope`: Main "busline"
+* `bus.reset()`: Resets main "busline". This doesn't affect registered custom "buslines".  
+`scope`: Main "busline".
 
-* `bus.hardReset()`: Resets main "busline" and destroys all registered custom "buslines"  
-`scope`: Main "busline"
+* `bus.hardReset()`: Resets main "busline" and destroys all registered custom "buslines".  
+`scope`: Main "busline".
 
-* `bus.require(module0,..,moduleN)`: Loads modules and registers their hermes-bus events in the specified order  
+* `bus.require(module0,..,moduleN)`: Loads modules and registers their hermes-bus events in the specified order.  
 `module0,..,moduleN`: Module absolute paths or relative to the root directory of the project.  
-`scope`: Main "busline"  
+`scope`: Main "busline".  
   
 ##Test
  Run the tests
