@@ -6,9 +6,9 @@
 # hermes-bus
 -----------
 
-A joy-to-use Node.js light-weight message bus!
+A joy-to-use light-weight message bus for Node.js!
 
-##Install
+## Install
  Install with [npm](npmjs.org):
 ```bash
     $ npm install hermes-bus
