@@ -67,7 +67,7 @@ By using the bus.triggerEvent you don't have any control on when the callbacks t
     //Module1.js
     bus.on("async", function(msg){
      setTimeout(function(){
-       console.log(msg, Module1.js);
+       console.log(msg, "Module1.js");
      }, 1000);
     });
 ```
@@ -75,7 +75,7 @@ By using the bus.triggerEvent you don't have any control on when the callbacks t
       //Module2.js
     bus.on("async", function(msg){
       setTimeout(function(){
-       console.log(msg, Module2.js);
+       console.log(msg, "Module2.js");
      }, 2000);
     });
 ```
@@ -106,7 +106,7 @@ Moreover, when registering the events callback, you need to declare "resolve" as
     //Module1.js
     bus.on("sync", function(msg, resolve){
      setTimeout(function(){
-       console.log(msg, Module1.js);
+       console.log(msg, "Module1.js");
        resolve();
      }, 1000);
     });
@@ -117,7 +117,7 @@ Moreover, when registering the events callback, you need to declare "resolve" as
       //Module2.js
     bus.on("sync", function(msg, resolve){
       setTimeout(function(){
-       console.log(msg, Module2.js);
+       console.log(msg, "Module2.js");
        resolve();
      }, 2000);
     });
