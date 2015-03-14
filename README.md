@@ -3,7 +3,7 @@
 [![downloads per month](http://img.shields.io/npm/dm/hermes-bus.svg)](https://www.npmjs.org/package/hermes-bus)
 [![Coverage Status](https://img.shields.io/coveralls/jahnestacado/hermes-bus.svg)](https://coveralls.io/r/jahnestacado/hermes-bus?branch=master)
 
-#hermes-bus
+# hermes-bus
 -----------
 
 A joy-to-use Node.js light-weight message bus!
@@ -13,16 +13,16 @@ A joy-to-use Node.js light-weight message bus!
 ```bash
     $ npm install hermes-bus
 ```
-##Use
+## Use
 ```javascript
     var bus = require("hermes-bus");
 ```
-###Overview
+### Overview
 The hermes-bus has a main "busline". On that "busline" we can register/trigger events and even create new "buslines" which in turn can be used to register/trigger other events.
 
 ![Overview](https://github.com/jahnestacado/hermes-bus/blob/master/images/herme-bus-overview.png?raw=true)
 
-#####Events on the main "busline"
+##### Events on the main "busline"
 ---
 ```javascript
     //Register event "start" on the main "busline"
@@ -40,7 +40,7 @@ The above code will invoke the callback function of the "start" event with the p
 
 _Note that the event-name is camelCased!_
 
-#####Events on custom "buslines"
+##### Events on custom "buslines"
 ---
 Hermes-bus gives the flexibility of creating your own "buslines". This allows us to create different namespaces which will make your code more readable and also increase the performance of the bus.
 
@@ -62,7 +62,7 @@ This event is not accessible from the main "busline" so if you register another 
 
 By using the bus.triggerEvent you don't have any control on when the callbacks that are attached on the event will return. Everything is asynchronous.
 
-#####Example
+##### Example
 ```javascript
     //Module1.js
     bus.on("async", function(msg){
@@ -101,7 +101,7 @@ So instead of bus.triggerSync you need to call bus.resolveSync.
 
 Moreover, when registering the events callback, you need to declare "resolve" as its last argument. By using bus.resolveSync hermes-bus automaticaly invoked all event callbacks with an additional argument. The "resolve" callback. You need to invoke that callback inside the "onDone" function of your asynchronous code.
 
-#####Example
+##### Example
 ```javascript
     //Module1.js
     bus.on("sync", function(msg, resolve){
@@ -139,7 +139,7 @@ it will print :
   
 We can register events that can be "triggered" and "resolved" using the same code. Only requirement is to invoke these events with the same number of arguments and always call the "resolve()" callback inside the events.
   
-##API
+## API
 ---
 * `bus.on(busline, event, callback)`: Registers an event on a busline.  
  `busline`: (**optional**) Defines the busline on which the event will be registered. (By default uses main "busline").  
@@ -171,12 +171,12 @@ If you both _"trigger"_ and _"resolve"_ the same event the _resolve_ function sh
 `module0,..,moduleN`: Module absolute paths or relative to the root directory of the project.  
 `scope`: Main "busline".  
   
-##Test
+## Test
  Run the tests
 ```bash
     $ npm test 
 ```
 
-##License
+## License
 Copyright (c) 2014 Ioannis Tzanellis<br>
 [Released under the MIT license](https://github.com/jahnestacado/hermes-bus/blob/master/LICENSE) 
