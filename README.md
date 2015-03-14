@@ -20,8 +20,7 @@ A joy-to-use Node.js light-weight message bus!
 ###Overview
 The hermes-bus has a main "busline". On that "busline" we can register/trigger events and even create new "buslines" which in turn can be used to register/trigger other events.
 
-![ScreenShot](https://github.com/jahnestacado/hermes-bus/blob/master/images/herme-bus-overview.png
-)
+![Overview](https://github.com/jahnestacado/hermes-bus/blob/master/images/herme-bus-overview.png?raw=true)
 
 #####Events on the main "busline"
 ---
