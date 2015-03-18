@@ -99,7 +99,7 @@ If you want to guarantee that all callbacks attached to an event has been execut
 
 So instead of bus.triggerSync you need to call bus.resolveSync.  
 
-Moreover, when registering the events callback, you need to declare "resolve" as its last argument. By using bus.resolveSync hermes-bus automaticaly invoked all event callbacks with an additional argument. The "resolve" callback. You need to invoke that callback inside the "onDone" function of your asynchronous code.
+By using bus.resolveSync, hermes-bus automaticaly invokes all event callbacks with an additional argument. So when registering the callback of a "resolved" event, we need to expect an extra argument for that callback, the "resolve" function. This function becomes available as the last argument of the events callback for "resolved" events. You need to invoke that callback inside the "onDone" function of your asynchronous code in order to let hermes-bus know that this event was resolved.
 
 ##### Example
 ```javascript
