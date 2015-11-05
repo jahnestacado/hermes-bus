@@ -21,6 +21,7 @@
     "message-bus"
   ],
   "dependencies": {
+    "lodash": "^3.10.1",
     "q": "1.0.1"
   },
   "devDependencies": {
