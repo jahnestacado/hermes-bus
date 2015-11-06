@@ -1,8 +1,8 @@
 /**
- * hermes-bus <https://github.com/jahnestacado/hermes-bus>
- * Copyright (c) 2014 Ioannis Tzanellis
- * Licensed under the MIT License (MIT).
- */
+* hermes-bus <https://github.com/jahnestacado/hermes-bus>
+* Copyright (c) 2014 Ioannis Tzanellis
+* Licensed under the MIT License (MIT).
+*/
 
 var assert = require("assert");
 var bus = require("./..");
@@ -15,13 +15,17 @@ describe('#################### Start integration tests for hermes-bus module \n'
         var firstEventCallback = sinon.spy();
         var secondEventCallback = sinon.spy();
 
-        bus.on("firstEvent", firstEventCallback);
-        bus.on("secondEvent", secondEventCallback);
-
         describe("when invoking bus.triggerFirstEvent", function() {
             var firstEventArg1 = {isDummy: true};
             var firstEventArg2 = "foo";
             var firstEventArg3 = 639;
+
+            before(function(){
+                bus.subscribe({
+                    onFirstEvent: firstEventCallback,
+                    onSecondEvent: secondEventCallback
+                });
+            });
 
             before(function() {
                 bus.triggerFirstEvent(firstEventArg1, firstEventArg2, firstEventArg3);
@@ -63,7 +67,9 @@ describe('#################### Start integration tests for hermes-bus module \n'
                     var thirdEventCallback = sinon.spy();
 
                     before(function() {
-                        bus.on("red", "firstEvent", thirdEventCallback);
+                        bus.subscribe("red",{
+                            onFirstEvent:thirdEventCallback
+                        });
                     });
 
                     describe("when invoking bus.red.triggerFirstEvent", function() {
@@ -89,19 +95,22 @@ describe('#################### Start integration tests for hermes-bus module \n'
                             assert(secondEventCallback.calledOnce);
                         });
 
-                        describe("when disabling and triggering thirdEvent of 'red' busline", function() {
+                        describe("when disabling and triggering firstEvent of 'red' busline", function() {
 
                             before(function() {
-                                bus.red.deactivate("firstEvent");
-                                bus.red.triggerFirstEvent();
+                                bus.red.disable("FirstEvent");
                             });
 
-                            it("should not invoke thirdCallback again", function() {
-                                assert(thirdEventCallback.calledOnce);
+                            before(function() {
+                                bus.red.triggerFirstEvent();
                             });
 
                             it("should not invoke firstCallback again", function() {
                                 assert(firstEventCallback.calledOnce);
+                            });
+
+                            it("should not invoke thirdCallback again", function() {
+                                assert(thirdEventCallback.calledOnce);
                             });
 
                             it("should not invoke secondCallback again", function() {
@@ -111,7 +120,7 @@ describe('#################### Start integration tests for hermes-bus module \n'
                             describe("when re-enabling and triggering thirdEvent of 'red' busline", function() {
 
                                 before(function() {
-                                    bus.red.activate("firstEvent");
+                                    bus.red.enable("FirstEvent");
                                     bus.red.triggerFirstEvent();
                                 });
 
@@ -134,8 +143,12 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                 var dummyEventCallback = sinon.spy();
 
                                 before(function() {
-                                    bus.on("green", "dummyEvent", dummyEventCallback);
-                                    bus.on("black", "dummyEvent", dummyEventCallback);
+                                    bus.subscribe("green",{
+                                        onDummyEvent: dummyEventCallback
+                                    });
+                                    bus.subscribe("black",{
+                                        onDummyEvent: dummyEventCallback
+                                    });
                                 });
 
                                 it("should have 'green' busline", function() {
@@ -195,7 +208,9 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                             describe("when creating again 'dummyEvent' message on 'green' busline ", function() {
 
                                                 before(function() {
-                                                    bus.on("green", "dummyEvent", dummyEventCallback);
+                                                    bus.subscribe("green",{
+                                                        onDummyEvent: dummyEventCallback
+                                                    });
                                                 });
 
                                                 it("should not have invoked 'dummyEventCallback' until this point", function() {
@@ -240,84 +255,78 @@ describe('#################### Start integration tests for hermes-bus module \n'
                 return Math.floor(Math.random() * (max - min + 1)) + min;
             }
 
-            function addCb(a, b) {
-                return a + b;
+            function add1567(x) {
+                return x + 1567;
             }
-            function mulCb(a, b) {
-                return a * b;
-            }
-
-            function divCb(a, b) {
-                return a / b;
+            function mul45(x) {
+                return x * 45;
             }
 
-            function getDelayedAsyncFunc(cb, delay) {
-                return    function asyncFunc(a, b, resolve) {
+            function div3(x) {
+                return x / 3;
+            }
+
+            function getAsyncApplyOperationFunc(operation) {
+                return    function asyncFunc(refObject, resolve) {
                     setTimeout(function() {
-                        resolve(cb(a, b));
-                    }, delay);
-                }
+                        refObject.value = operation(refObject.value);
+                        resolve();
+                    }, getRandomInt(300));
+                };
             }
 
-            var firstEventCallback = sinon.spy(getDelayedAsyncFunc(addCb, getRandomInt(500)));
-            var secondEventCallback = sinon.spy(getDelayedAsyncFunc(mulCb, getRandomInt(500)));
-            var thirdEventCallback = sinon.spy(getDelayedAsyncFunc(divCb, getRandomInt(500)));
+            var firstEventCallback = sinon.spy(getAsyncApplyOperationFunc(add1567));
+            var secondEventCallback = sinon.spy(getAsyncApplyOperationFunc(mul45));
+            var thirdEventCallback = sinon.spy(getAsyncApplyOperationFunc(div3));
 
             describe("when registering events", function() {
 
                 before(function() {
-                    bus.on("syncLine", "forthEvent", firstEventCallback);
-                    bus.on("syncLine", "forthEvent", secondEventCallback);
-                    bus.on("syncLine", "forthEvent", thirdEventCallback);
+                    bus.subscribe("sync", {
+                        __onForthEvent:firstEventCallback
+                    });
+                    bus.subscribe("sync", {
+                        __onForthEvent:secondEventCallback
+                    });
+                    bus.subscribe("sync", {
+                        __onForthEvent:thirdEventCallback
+                    });
                 });
 
-                describe("when invoking  bus.syncLine.resolveForthEvent with use of .then()", function() {
-                    var a = 566;
-                    var b = 5;
-                    var results;
+                describe("when invoking  bus.sync.triggerForthEvent with use of .then()", function() {
+                    var results = {value: 10};
                     before(function(done) {
-                        bus.syncLine.resolveForthEvent(a, b)
-                                .then(function(output) {
-                                    results = output;
-                                    done();
-                                });
+                        bus.sync.triggerForthEvent(results).then(function() {
+                            done();
+                        });
+                    });
+
+                    it("should have calculated all math operation in order", function() {
+                        assert(results.value === 23655);
                     });
 
                     it("should invoke firstEventCallback once", function() {
                         assert(firstEventCallback.calledOnce);
                     });
 
-
-                    it("should invoke firstEventCallback once", function() {
+                    it("should invoke secondEventCallback once", function() {
                         assert(secondEventCallback.calledOnce);
                     });
 
-                    it("should invoke firstEventCallback once", function() {
+                    it("should invoke thirdEventCallback once", function() {
                         assert(thirdEventCallback.calledOnce);
                     });
 
                     it("should invoke firstEventCallback with the right arguments", function() {
-                        assert(firstEventCallback.calledWith(a, b));
+                        assert(firstEventCallback.calledWith(results));
                     });
 
                     it("should invoke secondEventCallback with the right arguments", function() {
-                        assert(secondEventCallback.calledWith(a, b));
+                        assert(secondEventCallback.calledWith(results));
                     });
 
                     it("should invoke thirdEventCallback with the right arguments", function() {
-                        assert(thirdEventCallback.calledWith(a, b));
-                    });
-
-                    it("first element of 'results' should be equal to 571", function() {
-                        assert.equal(results[0], 571);
-                    });
-
-                    it("second element of 'results' should be equal to 2830", function() {
-                        assert.equal(results[1], 2830);
-                    });
-
-                    it("first element of 'results' should be equal to 113.2", function() {
-                        assert.equal(results[2], 113.2);
+                        assert(thirdEventCallback.calledWith(results));
                     });
 
                 });
