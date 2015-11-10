@@ -31,6 +31,14 @@ describe('#################### Start integration tests for hermes-bus module \n'
                 bus.trigger("firstEvent", firstEventArg1, firstEventArg2, firstEventArg3);
             });
 
+            it("should have 'firstEvent' attached", function() {
+                assert(bus.hasEvent("firstEvent"));
+            });
+
+            it("should have 'secondEvent' attached", function() {
+                assert(bus.hasEvent("secondEvent"));
+            });
+
             it("should invoke firstCallback once", function() {
                 assert(firstEventCallback.calledOnce);
             });
@@ -79,6 +87,10 @@ describe('#################### Start integration tests for hermes-bus module \n'
                             bus.red.trigger("firstEvent", thirdEventArg1);
                         });
 
+                        it("should have 'firstEvent' attached on the red busline", function() {
+                            assert(bus.red.hasEvent("firstEvent"));
+                        });
+
                         it("should invoke thirdCallback once", function() {
                             assert(thirdEventCallback.calledOnce);
                         });
@@ -103,6 +115,10 @@ describe('#################### Start integration tests for hermes-bus module \n'
 
                             before(function() {
                                 bus.red.triggerFirstEvent();
+                            });
+
+                            it("should still have 'firstEvent' attached on the red busline", function() {
+                                assert(bus.red.hasEvent("firstEvent"));
                             });
 
                             it("should not invoke firstCallback again", function() {
@@ -155,14 +171,30 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                     assert(bus.green);
                                 });
 
+                                it("should have 'dummyEvent' attached on the green busline", function() {
+                                    assert(bus.green.hasEvent("dummyEvent"));
+                                });
+
                                 it("should have 'black' busline", function() {
                                     assert(bus.black);
+                                });
+
+                                it("should have 'dummyEvent' attached on the black busline", function() {
+                                    assert(bus.black.hasEvent("dummyEvent"));
                                 });
 
                                 describe("when invoking reset on 'main' busline", function() {
 
                                     before(function() {
                                         bus.reset();
+                                    });
+
+                                    it("should not have 'dummyEvent' attached on the green busline", function() {
+                                        assert(bus.green.hasEvent("dummyEvent"), false);
+                                    });
+
+                                    it("should not have 'dummyEvent' attached on the black busline", function() {
+                                        assert(bus.black.hasEvent("dummyEvent"), false);
                                     });
 
                                     it("should not have triggerFirstEvent function on 'main' busline", function() {
