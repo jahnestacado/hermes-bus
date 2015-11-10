@@ -114,7 +114,7 @@ describe('#################### Start integration tests for hermes-bus module \n'
                             });
 
                             before(function() {
-                                bus.red.triggerFirstEvent();
+                                bus.red.trigger("firstEvent");
                             });
 
                             it("should still have 'firstEvent' attached on the red busline", function() {
@@ -198,7 +198,7 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                     });
 
                                     it("should not have triggerFirstEvent function on 'main' busline", function() {
-                                        assert.equal(bus.trigger("firstEvent"), null);
+                                        assert.equal(bus.triggerFirstEvent, undefined);
                                     });
 
                                     it("should not have triggerSecondEvent function on 'main' busline", function() {
@@ -314,21 +314,51 @@ describe('#################### Start integration tests for hermes-bus module \n'
             describe("when registering events", function() {
 
                 before(function() {
-                    bus.subscribe("sync", {
-                        __onForthEvent:firstEventCallback
+                    bus.subscribe({
+                        __onForthEvent: firstEventCallback
                     });
-                    bus.subscribe("sync", {
-                        __onForthEvent:secondEventCallback
+                    bus.subscribe({
+                        __onForthEvent: secondEventCallback
                     });
-                    bus.subscribe("sync", {
-                        __onForthEvent:thirdEventCallback
+                    bus.subscribe({
+                        __onForthEvent: thirdEventCallback
                     });
                 });
 
-                describe("when invoking  bus.sync.triggerForthEvent with use of .then()", function() {
+                describe("when invoking  bus.triggerForthEvent while event is disabled", function() {
                     var results = {value: 10};
+
+                    before(function() {
+                        bus.disable("forthEvent");
+                    });
+
+                    before(function() {
+                        bus.triggerForthEvent(results);
+                    });
+
+                    it("should not invoke firstEventCallback", function() {
+                        assert(firstEventCallback.notCalled);
+                    });
+
+                    it("should not invoke secondEventCallback", function() {
+                        assert(secondEventCallback.notCalled);
+                    });
+
+                    it("should not invoke thirdEventCallback", function() {
+                        assert(thirdEventCallback.notCalled);
+                    });
+
+                    before(function() {
+                        bus.enable("forthEvent");
+                    });
+
+                });
+
+                describe("when invoking  bus.triggerForthEvent with use of .then()", function() {
+                    var results = {value: 10};
+
                     before(function(done) {
-                        bus.sync.trigger("forthEvent", results).then(function() {
+                        bus.trigger("forthEvent", results).then(function() {
                             done();
                         });
                     });
