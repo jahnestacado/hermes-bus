@@ -6,7 +6,7 @@
 # hermes-bus
 -----------
 
-A joy-to-use light-weight message bus for Node.js!
+The power of Gods messenger in plain javascript.
 
 ## Install
  Install with [npm](npmjs.org):
