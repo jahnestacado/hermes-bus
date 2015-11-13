@@ -26,19 +26,26 @@ The hermes-bus has a main "busline". On that "busline" we can register/trigger e
 ---
 ```javascript
     //Register event "start" on the main "busline"
-    bus.on("start", function(data0,...,dataN){
-      ...
+    bus.subscribe({
+      onStart: function(arg0..argN){
+       ...
+      }
     });
 ```
-In order to trigger a registered event we need to call bus.trigger + "Event"().  
-We can trigger the "start" event on the main "busline" by calling:
+All the functions in the subscribed object which have a name with the 'on' prefix are automatically attached on the bus. No need to publish them. 
+In order to trigger a subscribed function we need to call bus.trigger + "eventName"(arg0..argN) or bus.trigger("start", arg0..argN).  
+For example, e can trigger the "start" event on the main "busline" by calling:
 ```javascript
     //"start" event is already registered on the main "busline"
-    bus.triggerStart(data0,...,dataN);
+    bus.triggerStart("foo", "bar");
 ```
-The above code will invoke the callback function of the "start" event with the passed arguments (e.g data0,...,dataN).  
+or
+```javascript
+    //"start" event is already registered on the main "busline"
+    bus.trigger("start", "foo", "bar");
+```
 
-_Note that the event-name is camelCased!_
+_Note that the event name is camelCased if we use the generated function and always starts with a lower case letter when we use the trigger-string approach!_
 
 ##### Events on custom "buslines"
 ---
@@ -48,8 +55,10 @@ Lets say that we want to create a busline that will handle database utilities.
 
 ```javascript
     //Registers event "save" on the db "busline"
-    bus.on("db", "save", function(entry){
-      ...
+    bus.subscribe("db", {
+      onSave: function(entry){
+       ...
+     } 
     });
 ```
 
@@ -65,19 +74,23 @@ By using the bus.triggerEvent you don't have any control on when the callbacks t
 ##### Example
 ```javascript
     //Module1.js
-    bus.on("async", function(msg){
-     setTimeout(function(){
-       console.log(msg, "Module1.js");
-     }, 1000);
+    bus.subscribe{
+      onAsync: function(msg){
+       setTimeout(function(){
+         console.log(msg, "Module1.js");
+       }, 1000);
+      }
     });
 ```
 ```javascript
       //Module2.js
-    bus.on("async", function(msg){
-      setTimeout(function(){
-       console.log(msg, "Module2.js");
-     }, 2000);
-    });
+  bus.subscribe{
+      onAsync: function(msg){
+       setTimeout(function(){
+         console.log(msg, "Module2.js");
+       }, 2000);
+      }
+  });
 ```
 In the example above we attach two asynchronous callback functions on the "async" event.
 
@@ -95,38 +108,42 @@ it will print :
   $ trigger event 'async' in Module2.js  
  ```
 
-If you want to guarantee that all callbacks attached to an event has been executed and then execute some code that depends on the state that the triggered event created you need to "resolve" that event.  
+If you want to guarantee that all asynchronous callbacks attached to an event has been executed and then execute some code that depends on the state that the triggered event created you need to "resolve" that event.  
 
-So instead of bus.triggerSync you need to call bus.resolveSync.  
+In order to define which events are going to be handled as asynchronous we need to give the "__on" prefix in a subscribed function.
 
-By using bus.resolveSync, hermes-bus automaticaly invokes all event callbacks with an additional argument. So when registering the callback of a "resolved" event, we need to expect an extra argument for that callback, the "resolve" function. This function becomes available as the last argument of the events callback for "resolved" events. You need to invoke that callback inside the "onDone" function of your asynchronous code in order to let hermes-bus know that this event was resolved.
+When triggering an event, all functions that are subscribed using the '__on' prefix automatically are invoked with an additional argument. This arguments is always the last one and is used to define when the asynchronous event is executed. We need to invoke that callback inside the "onDone" function of our asynchronous code in order to let hermes-bus know that this event was resolved.
 
 ##### Example
 ```javascript
     //Module1.js
-    bus.on("sync", function(msg, resolve){
-     setTimeout(function(){
-       console.log(msg, "Module1.js");
-       resolve();
-     }, 1000);
+    bus.subscribe({
+     __onSync: function(msg, resolve){
+        setTimeout(function(){
+         console.log(msg, "Module1.js");
+         resolve();
+       }, 1000);
+     }
     });
 ```
 
 ```javascript
     
       //Module2.js
-    bus.on("sync", function(msg, resolve){
-      setTimeout(function(){
-       console.log(msg, "Module2.js");
-       resolve();
-     }, 2000);
+  bus.subscribe({
+     __onSync: function(msg, resolve){
+        setTimeout(function(){
+         console.log(msg, "Module2.js");
+         resolve();
+       }, 2000);
+     }
     });
 ```
 
 ```javascript
     //Module3.js
     var msg = "resolve event 'sync' in ";
-    bus.resolveSync(msg).then(function(){
+    bus.triggerSync(msg).then(function(){
       console.log("all callbacks finished");
     });
 ```
@@ -137,25 +154,20 @@ it will print :
    $ all callbacks finished  
   ```
   
-We can register events that can be "triggered" and "resolved" using the same code. Only requirement is to invoke these events with the same number of arguments and always call the "resolve()" callback inside the events.
+We can subscribe asynchronous and synchronous events on the same event. All the subscribed functions that have the "__on" prefix will be executed first and then and only then, the .then() function will be executed. Only requirement is to invoke these events with the same number of arguments and always call the "resolve()" callback inside the asynchronous callbacks.
   
 ## API
 ---
-* `bus.on(busline, event, callback)`: Registers an event on a busline.  
+* `bus.subscribe(busline, registeredObject)`: Registers events on a busline.  
  `busline`: (**optional**) Defines the busline on which the event will be registered. (By default uses main "busline").  
- `event`: The registered event on the busline.   
- `callback(arguments, resolve)`: The callback function that is attached to registered event.  
- * `arguments`: Arguments that are passed from the _"triggerEvent"_ and/or _"resolveEvent"_ hermes-bus functions. An event should be always triggered/resolved with the same number of arguments.    
-   `resolve`: (**optional**) Function that is available as the last argument of the callback and should be used for hermes-bus _"resolved"_ events. Call that function inside your "onDone" callback of your asynchronous code.
-If you both _"trigger"_ and _"resolve"_ the same event the _resolve_ function should be always invoked.   
-* * `scope`: Main "busline".    <br/>                 
+ `registeredObjectt`: Object that holds the listener functions   
 
-* `bus.deactivate(event)`: Deactivates a registered event on a busline.  
- `event`: The event to deactivate.  
+* `bus.disable(event)`: Disables a registered event on a busline.  
+ `event`: The event to disable.  
  `scope`: All "buslines".  
 
-* `bus.activate(event)`: Activates an a registered event on a busline.  
-`event`: The event to deactivate.  
+* `bus.enable(event)`: Enables a registered event on a busline.  
+`event`: The event to enable.  
 `scope`: All "buslines".  
   
 * `bus[busline].destroy()`: Destroys custom busline.  
