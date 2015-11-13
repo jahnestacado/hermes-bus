@@ -160,14 +160,18 @@ We can subscribe asynchronous and synchronous events on under the same event nam
 ---
 * `bus.subscribe(busline, registeredObject)`: Registers events on a busline.  
  `busline`: (**optional**) Defines the busline on which the event will be registered. (By default uses main "busline").  
- `registeredObjectt`: Object that holds the listener functions   
+ `registeredObject`: Object that holds the listener functions   
 
-* `bus.disable(event)`: Disables a registered event on a busline.  
- `event`: The event to disable.  
+* `bus.disable(eventName)`: Disables a registered event on a busline.  
+ `eventName`: The event to disable.  
  `scope`: All "buslines".  
 
-* `bus.enable(event)`: Enables a registered event on a busline.  
-`event`: The event to enable.  
+* `bus.enable(eventName)`: Enables a registered event on a busline.  
+`eventName`: The event to enable.  
+`scope`: All "buslines".  
+
+* `bus.hasEvent(eventName)`: Checks if an event is registered on a busline.  
+`eventName`: The event under check.  
 `scope`: All "buslines".  
   
 * `bus[busline].destroy()`: Destroys custom busline.  
