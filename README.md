@@ -154,7 +154,7 @@ it will print :
    $ all callbacks finished  
   ```
   
-We can subscribe asynchronous and synchronous events on the same event. All the subscribed functions that have the "__on" prefix will be executed first and then and only then, the .then() function will be executed. Only requirement is to invoke these events with the same number of arguments and always call the "resolve()" callback inside the asynchronous callbacks.
+We can subscribe asynchronous and synchronous events on under the same event name. All the subscribed functions that have the "__on" prefix will be executed first and then, and only then, the .then() function will be executed. Only requirement is to call these events with the same number of arguments and make sure that the "resolve()" function is invoked inside the "onDone" asynchronous callbacks.
   
 ## API
 ---
