@@ -58,7 +58,7 @@ Lets say that we want to create a busline that will handle database utilities.
     bus.subscribe("db", {
       onSave: function(entry){
        ...
-     } 
+      } 
     });
 ```
 
@@ -74,21 +74,21 @@ By using the bus.triggerEvent you don't have any control on when the callbacks t
 ##### Example
 ```javascript
     //Module1.js
-    bus.subscribe{
+    bus.subscribe({
       onAsync: function(msg){
-       setTimeout(function(){
-         console.log(msg, "Module1.js");
-       }, 1000);
-      }
+        setTimeout(function(){
+          console.log(msg, "Module1.js");
+        }, 1000);
+       }
     });
 ```
 ```javascript
       //Module2.js
-  bus.subscribe{
+  bus.subscribe({
       onAsync: function(msg){
-       setTimeout(function(){
-         console.log(msg, "Module2.js");
-       }, 2000);
+        setTimeout(function(){
+          console.log(msg, "Module2.js");
+        }, 2000);
       }
   });
 ```
@@ -122,7 +122,7 @@ When triggering an event, all functions that are subscribed using the '__on' pre
         setTimeout(function(){
          console.log(msg, "Module1.js");
          resolve();
-       }, 1000);
+        }, 1000);
      }
     });
 ```
@@ -135,9 +135,9 @@ When triggering an event, all functions that are subscribed using the '__on' pre
         setTimeout(function(){
          console.log(msg, "Module2.js");
          resolve();
-       }, 2000);
+        }, 2000);
      }
-    });
+  });
 ```
 
 ```javascript
