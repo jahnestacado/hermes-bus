@@ -6,7 +6,7 @@
 # hermes-bus
 -----------
 
-The power of Gods messenger in plain javascript.
+Powerful event-emitter module for responsive bus architecture applications.
 
 ## Install
  Install with [npm](npmjs.org):
