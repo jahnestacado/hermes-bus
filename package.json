@@ -1,7 +1,7 @@
 {
   "name": "hermes-bus",
   "version": "2.0.1",
-  "description": "A joy-to-use Node.js light-weight message bus!",
+  "description": "Powerful event-emitter module for responsive bus architecture applications",
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter spec",
