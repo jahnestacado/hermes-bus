@@ -393,6 +393,44 @@ describe('#################### Start integration tests for hermes-bus module \n'
 
                 });
 
+                describe("when testing the before/after hooks", function() {
+                    var result = {text:""};
+
+                    var createAppender = function(keyword){
+                        return function(text, symbol){result.text += keyword + symbol;};
+                    };
+
+                    var firstBeforeCallback = sinon.spy(createAppender("before1"));
+                    var secondBeforeCallback = sinon.spy(createAppender("before2"));
+
+                    var firstEventCallback = sinon.spy(createAppender("on1"));
+                    var secondEventCallback = sinon.spy(createAppender("on2"));
+
+                    var firstAfterCallback = sinon.spy(createAppender("after1"));
+                    var secondAfterCallback = sinon.spy(createAppender("after2"));
+
+                    before(function() {
+                        bus.subscribe({
+                            beforeHookTest: firstBeforeCallback,
+                            onHookTest: firstEventCallback,
+                            afterHookTest: firstAfterCallback
+                        });
+                        bus.subscribe({
+                            beforeHookTest: secondBeforeCallback,
+                            onHookTest: secondEventCallback,
+                            afterHookTest: secondAfterCallback
+                        });
+                    });
+
+                    before(function() {
+                        bus.trigger("hookTest", result, "-");
+                    });
+
+                    it("should append all substrings in order and create the expected string", function(){
+                        assert(result.text === "before1-before2-on1-on2-after1-after2-");
+                    });
+                });
+
             });
 
         });
