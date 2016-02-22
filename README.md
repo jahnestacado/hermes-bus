@@ -243,7 +243,7 @@ If we want to handle asynchronous code in our hooks, then we can use the "__" pr
 `scope`: Main "busline".
 
 * `bus.require(module0,..,moduleN)`: Loads modules and registers their hermes-bus events in the specified order.  
-`module0,..,moduleN`: Module absolute paths or relative to the root directory of the project.  
+`[module0,..,moduleN]`: Module paths relative to current working directory  
 `scope`: Main "busline".  
   
 ## Test
