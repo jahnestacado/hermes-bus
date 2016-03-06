@@ -435,6 +435,103 @@ describe('#################### Start integration tests for hermes-bus module \n'
 
         });
 
+        describe("when testing the unsubscribe function", function(){
+            var subscribedObjectA = {
+                beforeFoo: sinon.stub(),
+                onFoo: sinon.stub(),
+                afterFoo: sinon.stub()
+            };
+            var subscribedObjectB = {
+                beforeFoo: sinon.stub(),
+                onFoo: sinon.stub(),
+                afterFoo: sinon.stub()
+            };
+            before(function(){
+                bus.subscribe("red", subscribedObjectA);
+                bus.subscribe("red", subscribedObjectB);
+            });
+
+            describe("when triggering the foo event", function(){
+                before(function(){
+                    bus.red.triggerFoo();
+                });
+
+                after(function(){
+                    bus.hardReset();
+                });
+
+                it("should trigger the subscribedObjectA.beforeFoo listener stub once", function(){
+                    sinon.assert.calledOnce(subscribedObjectA.beforeFoo);
+                });
+
+                it("should trigger the subscribedObjectA.onFoo listener stub once", function(){
+                    sinon.assert.calledOnce(subscribedObjectA.onFoo);
+                });
+
+                it("should trigger the subscribedObjectA.afterFoo listener stub once", function(){
+                    sinon.assert.calledOnce(subscribedObjectA.afterFoo);
+                });
+
+                it("should trigger the subscribedObjectB.beforeFoo listener stub once", function(){
+                    sinon.assert.calledOnce(subscribedObjectB.beforeFoo);
+                });
+
+                it("should trigger the subscribedObjectB.onFoo listener stub once", function(){
+                    sinon.assert.calledOnce(subscribedObjectB.onFoo);
+                });
+
+                it("should trigger the subscribedObjectB.afterFoo listener stub once", function(){
+                    sinon.assert.calledOnce(subscribedObjectB.afterFoo);
+                });
+
+                describe("when unsubscribing 'subscribedObjectA' and triggering foo event again", function(){
+                    before(function(){
+                        bus.unsubscribe("red", subscribedObjectA);
+                    });
+                    before(function(){
+                        bus.red.triggerFoo();
+                    });
+
+                    it("should not trigger the subscribedObjectA.beforeFoo listener stub again", function(){
+                        sinon.assert.calledOnce(subscribedObjectA.beforeFoo);
+                    });
+
+                    it("should not trigger the subscribedObjectA.onFoo listener stub again", function(){
+                        sinon.assert.calledOnce(subscribedObjectA.onFoo);
+                    });
+
+                    it("should not trigger the subscribedObjectA.afterFoo listener stub again", function(){
+                        sinon.assert.calledOnce(subscribedObjectA.afterFoo);
+                    });
+
+                    it("should trigger the subscribedObjectB.beforeFoo listener stub twice", function(){
+                        sinon.assert.calledTwice(subscribedObjectB.beforeFoo);
+                    });
+
+                    it("should trigger the subscribedObjectB.onFoo listener stub twice", function(){
+                        sinon.assert.calledTwice(subscribedObjectB.onFoo);
+                    });
+
+                    it("should trigger the subscribedObjectB.afterFoo listener stub twice", function(){
+                        sinon.assert.calledTwice(subscribedObjectB.afterFoo);
+                    });
+
+                    describe("when unsubscribing 'subscribedObjectB' and triggering foo event again", function(){
+                        before(function(){
+                            bus.unsubscribe("red", subscribedObjectB);
+                        });
+
+                        it("should delete red busline", function(){
+                            assert.equal(bus.red, undefined);
+                        });
+                    });
+
+
+                });
+            });
+
+        });
+
         after(function() {
             console.log("\n  #################### End of integration tests for hermes-bus module.");
         });
