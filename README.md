@@ -217,29 +217,33 @@ If we want to handle asynchronous code in our hooks, then we can use the "__" pr
   
 ## API
 ---
-* `bus.subscribe(busline, registeredObject)`: Registers events on a busline.  
- `busline`: (**optional**) Defines the busline on which the event will be registered. (By default uses main "busline").  
+* `bus.subscribe(busline, registeredObject)`: Subscribes an object with listeners on a busline.  
+ `busline`: (**optional**) Defines the busline on which the object will be subscribed. (By default uses main "busline").  
  `registeredObject`: Object that holds the listener functions   
 
-* `bus.disable(eventName)`: Disables a registered event on a busline.  
+* `bus.unsubscribe(busline, registeredObject)`: Unregisters an object with listeners from a busline.  
+ `busline`: (**optional**) Defines the busline on which the event will be unsubscribed. (By default uses main "busline").  
+ `registeredObject`: Object that holds the listener functions 
+
+* `bus.disable(eventName)`: Disables a subscribed event on a busline.  
  `eventName`: The event to disable.  
  `scope`: All "buslines".  
 
-* `bus.enable(eventName)`: Enables a registered event on a busline.  
+* `bus.enable(eventName)`: Enables a subscribed event on a busline.  
 `eventName`: The event to enable.  
 `scope`: All "buslines".  
 
-* `bus.hasEvent(eventName)`: Checks if an event is registered on a busline.  
+* `bus.hasEvent(eventName)`: Checks if an event is subscribed on a busline.  
 `eventName`: The event under check.  
 `scope`: All "buslines".  
   
 * `bus[busline].destroy()`: Destroys custom busline.  
 `scope`: Custom "buslines" only.
 
-* `bus.reset()`: Resets main "busline". This doesn't affect registered custom "buslines".  
+* `bus.reset()`: Resets main "busline". This doesn't affect subscribed custom "buslines".  
 `scope`: Main "busline".
 
-* `bus.hardReset()`: Resets main "busline" and destroys all registered custom "buslines".  
+* `bus.hardReset()`: Resets main "busline" and destroys all subscribed custom "buslines".  
 `scope`: Main "busline".
 
 * `bus.require(module0,..,moduleN)`: Loads modules and registers their hermes-bus events in the specified order.  
