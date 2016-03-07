@@ -7,6 +7,7 @@
 var assert = require("assert");
 var bus = require("./..");
 var sinon = require("sinon");
+var _ = require("underscore");
 
 describe('#################### Start integration tests for hermes-bus module \n', function() {
 
@@ -516,7 +517,7 @@ describe('#################### Start integration tests for hermes-bus module \n'
                         sinon.assert.calledTwice(subscribedObjectB.afterFoo);
                     });
 
-                    describe("when unsubscribing 'subscribedObjectB' and triggering foo event again", function(){
+                    describe("when unsubscribing the last remaining object 'subscribedObjectB' and triggering foo event again", function(){
                         before(function(){
                             bus.unsubscribe("red", subscribedObjectB);
                         });
@@ -526,10 +527,25 @@ describe('#################### Start integration tests for hermes-bus module \n'
                         });
                     });
 
-
                 });
             });
 
+        });
+
+        describe("when testing the non-overridable properties", function(){
+            var nonOverridableProps = _.union(["$main_busline$"], Object.keys(Object.getPrototypeOf(bus)), Object.keys(bus));
+            nonOverridableProps.forEach(function(propertyName){
+                it("should throw the expected error", function(){
+                    assert.throws(function(){
+                        bus.subscribe(propertyName, {})
+                    }, function(error){
+                        if(error.message === "Not permitted busline name: " + propertyName +
+                        ". Cannot override API functions: [ "+ nonOverridableProps +"]."){
+                            return true;
+                        }
+                    });
+                });
+            });
         });
 
         after(function() {
