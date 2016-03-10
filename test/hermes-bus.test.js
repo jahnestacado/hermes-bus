@@ -10,9 +10,7 @@ var sinon = require("sinon");
 var _ = require("underscore");
 
 describe('#################### Start integration tests for hermes-bus module \n', function() {
-
     describe("trigger events", function() {
-
         var firstEventCallback = sinon.spy();
         var secondEventCallback = sinon.spy();
 
@@ -20,7 +18,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
             var firstEventArg1 = {isDummy: true};
             var firstEventArg2 = "foo";
             var firstEventArg3 = 639;
-
             before(function(){
                 bus.subscribe({
                     onFirstEvent: firstEventCallback,
@@ -55,7 +52,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
             describe("when invoking bus.triggerSecondEvent", function() {
                 var secondEventArg1 = {isDummy: true};
                 var secondEventArg2 = [3, 5, 6, ["4"]];
-
                 before(function() {
                     bus.triggerSecondEvent(firstEventArg1, secondEventArg2);
                 });
@@ -74,7 +70,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
 
                 describe("creating 'red busline' ", function() {
                     var thirdEventCallback = sinon.spy();
-
                     before(function() {
                         bus.subscribe("red",{
                             onFirstEvent:thirdEventCallback
@@ -83,7 +78,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
 
                     describe("when triggering 'firstEvent' on the red busline", function() {
                         var thirdEventArg1 = {isDummy: true};
-
                         before(function() {
                             bus.red.trigger("firstEvent", thirdEventArg1);
                         });
@@ -109,7 +103,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
                         });
 
                         describe("when disabling and invoking triggerFirstEvent on the red busline", function() {
-
                             before(function() {
                                 bus.red.disable("firstEvent");
                             });
@@ -135,7 +128,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
                             });
 
                             describe("when re-enabling and triggering 'thirdEvent' on the red busline", function() {
-
                                 before(function() {
                                     bus.red.enable("firstEvent");
                                     bus.red.trigger("firstEvent");
@@ -152,13 +144,10 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                 it("should not invoke secondCallback again", function() {
                                     assert(secondEventCallback.calledOnce);
                                 });
-
                             });
 
                             describe("when creating 'green' and 'black' and 'white' buslines", function() {
-
                                 var dummyEventCallback = sinon.spy();
-
                                 before(function() {
                                     bus.subscribe("green",{
                                         onDummyEvent: dummyEventCallback
@@ -185,7 +174,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                 });
 
                                 describe("when invoking reset on 'main' busline", function() {
-
                                     before(function() {
                                         bus.reset();
                                     });
@@ -215,7 +203,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                     });
 
                                     describe("when invoking destroy on 'red' busline", function() {
-
                                         before(function() {
                                             bus.red.destroy();
                                         });
@@ -225,7 +212,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                         });
 
                                         describe("when invoking hardReset on 'main' busline", function() {
-
                                             before(function() {
                                                 bus.hardReset();
                                             });
@@ -239,7 +225,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                             });
 
                                             describe("when creating again 'dummyEvent' message on 'green' busline ", function() {
-
                                                 before(function() {
                                                     bus.subscribe("green",{
                                                         onDummyEvent: dummyEventCallback
@@ -251,7 +236,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                                 });
 
                                                 describe("when triggering 'dummyEvent' message on 'green' busline ", function() {
-
                                                     before(function() {
                                                         bus.green.trigger("dummyEvent");
                                                     });
@@ -259,31 +243,20 @@ describe('#################### Start integration tests for hermes-bus module \n'
                                                     it("should invoke 'dummyEventCallback' only once", function() {
                                                         assert(dummyEventCallback.calledOnce);
                                                     });
-
                                                 });
-
                                             });
-
                                         });
-
                                     });
-
                                 });
-
                             });
-
                         });
-
                     });
-
                 });
-
             });
 
         });
 
         describe("when resolving events", function() {
-
             function getRandomInt(min, max) {
                 return Math.floor(Math.random() * (max - min + 1)) + min;
             }
@@ -313,7 +286,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
             var thirdEventCallback = sinon.spy(getAsyncApplyOperationFunc(div3));
 
             describe("when registering events", function() {
-
                 before(function() {
                     bus.subscribe({
                         __onForthEvent: firstEventCallback
@@ -328,7 +300,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
 
                 describe("when invoking  bus.triggerForthEvent while event is disabled", function() {
                     var results = {value: 10};
-
                     before(function() {
                         bus.disable("forthEvent");
                     });
@@ -352,12 +323,10 @@ describe('#################### Start integration tests for hermes-bus module \n'
                     before(function() {
                         bus.enable("forthEvent");
                     });
-
                 });
 
                 describe("when invoking  bus.triggerForthEvent with use of .then()", function() {
                     var results = {value: 10};
-
                     before(function(done) {
                         bus.trigger("forthEvent", results).then(function() {
                             done();
@@ -391,7 +360,6 @@ describe('#################### Start integration tests for hermes-bus module \n'
                     it("should invoke thirdEventCallback with the right arguments", function() {
                         assert(thirdEventCallback.calledWith(results));
                     });
-
                 });
 
                 describe("when testing the before/after hooks", function() {
@@ -431,9 +399,7 @@ describe('#################### Start integration tests for hermes-bus module \n'
                         assert(result.text === "before1-before2-on1-on2-after1-after2-");
                     });
                 });
-
             });
-
         });
 
         describe("when testing the unsubscribe function", function(){
