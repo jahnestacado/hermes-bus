@@ -516,20 +516,8 @@ describe('#################### Start integration tests for hermes-bus module \n'
                     it("should trigger the subscribedObjectB.afterFoo listener stub twice", function(){
                         sinon.assert.calledTwice(subscribedObjectB.afterFoo);
                     });
-
-                    describe("when unsubscribing the last remaining object 'subscribedObjectB' and triggering foo event again", function(){
-                        before(function(){
-                            bus.unsubscribe("red", subscribedObjectB);
-                        });
-
-                        it("should delete red busline", function(){
-                            assert.equal(bus.red, undefined);
-                        });
-                    });
-
                 });
             });
-
         });
 
         describe("when testing the non-overridable properties", function(){
