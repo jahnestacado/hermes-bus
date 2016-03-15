@@ -246,8 +246,9 @@ If we want to handle asynchronous code in our hooks, then we can use the "__" pr
 * `bus.hardReset()`: Resets main "busline" and destroys all subscribed custom "buslines".  
 `scope`: Main "busline".
 
-* `bus.require(module0,..,moduleN)`: Loads modules and registers their hermes-bus events in the specified order.  
-`[module0,..,moduleN]`: Module paths relative to current working directory  
+* `bus.require(basePath, [...modulePaths])`: Loads modules and registers their events in the specified order.  
+`basePath`: (**optional**) Module paths are relative to this path. If not provided it defaults to current working directory.  
+`[module0,..,moduleN]`: Module paths relative to basePath.  
 `scope`: Main "busline".  
   
 ## Test
