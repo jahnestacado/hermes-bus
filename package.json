@@ -1,6 +1,6 @@
 {
   "name": "hermes-bus",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Powerful event-emitter module for responsive bus architecture applications",
   "main": "index.js",
   "scripts": {
