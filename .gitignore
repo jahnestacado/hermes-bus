@@ -1,3 +1,8 @@
-#Local module directory
+# Local module directory
 node_modules/
+
+# Test coverage report
 coverage/
+
+# Npm logs
+npm-debug.log
