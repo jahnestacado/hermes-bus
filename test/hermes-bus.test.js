@@ -502,6 +502,47 @@ describe('#################### Start integration tests for hermes-bus module \n'
             });
         });
 
+        describe("when an event is throwing an exception", function(){
+            var value = 0;
+            var theError = new Error("The Error!");
+            before(function(){
+                sinon.spy(console, "error");
+            });
+            after(function(){
+                console.error.restore();
+            })
+
+            before(function(){
+                bus.subscribe({
+                    onException: function(){throw theError},
+                });
+
+                bus.subscribe({
+                    onUpdateValue: function(newValue){
+                        value = newValue;
+                    },
+                });
+            });
+            after(function(){
+                bus.hardReset();
+            });
+
+            before(function(){
+                bus.triggerException();
+                bus.triggerUpdateValue(100);
+            });
+
+            it("should not affect the execution of other events (e.g 'updateValue') and set the value variable to 100", function() {
+                assert.equal(value, 100);
+            });
+
+            it("should call console.error once with expected arguments", function() {
+                sinon.assert.calledOnce(console.error);
+                sinon.assert.calledWithExactly(console.error, "[ERROR][Hermes-bus] Exception thrown from within a listener" +
+                " (e.g beforeException, onException or afterException) ->", theError);
+            });
+        });
+
         after(function() {
             console.log("\n  #################### End of integration tests for hermes-bus module.");
         });
