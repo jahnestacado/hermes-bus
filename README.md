@@ -12,7 +12,7 @@ Powerful event-emitter module for responsive bus architecture applications.
 * Before/After event hooks
 
 ## Install
- Install with [npm](npmjs.org):
+ Install with [npm](https://www.npmjs.com/):
 ```bash
     $ npm install hermes-bus
 ```
