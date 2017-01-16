@@ -5,7 +5,7 @@
 
 ![Logo](https://github.com/jahnestacado/hermes-bus/blob/master/images/hermes-bus-logo.240.png?raw=true)
 
-# hermes-bus 
+# hermes-bus
 -----------
 Powerful event-emitter module for responsive bus architecture applications.
 ##### Features
@@ -37,7 +37,7 @@ The hermes-bus has a main "busline". On that "busline" we can register/trigger e
       }
     });
 ```
-All the functions in the subscribed object which have a name with the 'on' prefix are automatically attached on the bus. No need to publish them. 
+All the functions in the subscribed object which have a name with the 'on' prefix are automatically attached on the bus. No need to publish them.
 In order to trigger a subscribed function we need to call bus.trigger + "eventName"(arg0..argN) or bus.trigger("start", arg0..argN).  
 For example, we can trigger the "start" event on the main "busline" by calling:
 ```javascript
@@ -63,7 +63,7 @@ Lets say that we want to create a busline that will handle database utilities.
     bus.subscribe("db", {
       onSave: function(entry){
        ...
-      } 
+      }
     });
 ```
 
@@ -124,7 +124,7 @@ When triggering an event, all functions that are subscribed using the '__on' pre
 ```javascript
     //Module1.js
     bus.subscribe({
-     __onSync: function(msg, resolve){
+     __onAsync: function(msg, resolve){
         setTimeout(function(){
          console.log(msg, "Module1.js");
          resolve();
@@ -134,10 +134,10 @@ When triggering an event, all functions that are subscribed using the '__on' pre
 ```
 
 ```javascript
-    
+
       //Module2.js
   bus.subscribe({
-     __onSync: function(msg, resolve){
+     __onAsync: function(msg, resolve){
         setTimeout(function(){
          console.log(msg, "Module2.js");
          resolve();
@@ -148,22 +148,22 @@ When triggering an event, all functions that are subscribed using the '__on' pre
 
 ```javascript
     //Module3.js
-    var msg = "resolve event 'sync' in ";
-    bus.triggerSync(msg).then(function(){
+    var msg = "resolved event 'async' in ";
+    bus.triggerAsync(msg).then(function(){
       console.log("all callbacks finished");
     });
 ```
 we will get :  
 ```bash
-   $ resolve event 'sync' in Module1.js    
-   $ resolve event 'sync' in Module2.js  
+   $ resolved event 'async' in Module1.js
+   $ resolved event 'async' in Module2.js
    $ all callbacks finished  
   ```
-  
+
 We can subscribe asynchronous and synchronous events under the same event name. All the subscribed functions that have the "__on" prefix will be executed first and then, and only then, the .then() function will be invoked. Only requirement is to call these events with the same number of arguments and make sure that the "resolve()" function is invoked inside the "onDone" asynchronous callbacks.
 
 ###  Before/After event hooks
-Hermes-bus provides "before" and "after" hooks for every subscribed event. These hooks, if specified, are triggered automatically by the bus. 
+Hermes-bus provides "before" and "after" hooks for every subscribed event. These hooks, if specified, are triggered automatically by the bus.
 
 ```javascript
 // Module1.js
@@ -195,7 +195,7 @@ Hermes-bus provides "before" and "after" hooks for every subscribed event. These
     });
 ```
 
-As we can see the naming convention is self explanatory. 
+As we can see the naming convention is self explanatory.
 
 In order to create a "before" for the event "foo", we need to specify the "beforeFoo" function in the subscribed object. Same for the "after" hooks.
 
@@ -206,17 +206,17 @@ bus.triggerFoo("'hi'.");
 we will get :  
 ```bash
    $ Module1: Before hook says 'hi'.   
-   $ Module2: Before hook says 'hi'. 
+   $ Module2: Before hook says 'hi'.
    $ Module1: Foo event says 'hi'.    
    $ Module2: Foo event says 'hi'.    
    $ Module1: After hook says 'hi'.     
-   $ Module2: After hook says 'hi'. 
+   $ Module2: After hook says 'hi'.
   ```
-All "before" hooks will be executed before the "foo" event and after that the "after" hooks will follow. 
+All "before" hooks will be executed before the "foo" event and after that the "after" hooks will follow.
 
-If we want to handle asynchronous code in our hooks, then we can use the "__" prefix as we do with normal event listeners (e.g __beforeFoo, __afterFoo). This works the same way as for regular subscribed event listeners. (_check Asynchronous event handling section_) 
+If we want to handle asynchronous code in our hooks, then we can use the "__" prefix as we do with normal event listeners (e.g __beforeFoo, __afterFoo). This works the same way as for regular subscribed event listeners. (_check Asynchronous event handling section_)
 
-  
+
 ## API
 ---
 * `bus.subscribe(busline, registeredObject)`: Subscribes an object with listeners on a busline.  
@@ -225,7 +225,7 @@ If we want to handle asynchronous code in our hooks, then we can use the "__" pr
 
 * `bus.unsubscribe(busline, registeredObject)`: Unregisters an object with listeners from a busline.  
  `busline`: (**optional**) Defines the busline on which the event will be unsubscribed. (By default uses main "busline").  
- `registeredObject`: Object that holds the listener functions 
+ `registeredObject`: Object that holds the listener functions
 
 * `bus.disable(eventName)`: Disables a subscribed event on a busline.  
  `eventName`: The event to disable.  
@@ -238,7 +238,7 @@ If we want to handle asynchronous code in our hooks, then we can use the "__" pr
 * `bus.hasEvent(eventName)`: Checks if an event is subscribed on a busline.  
 `eventName`: The event under check.  
 `scope`: All "buslines".  
-  
+
 * `bus[busline].destroy()`: Destroys custom busline.  
 `scope`: Custom "buslines" only.
 
@@ -252,13 +252,13 @@ If we want to handle asynchronous code in our hooks, then we can use the "__" pr
 `basePath`: (**optional**) Module paths are relative to this path. If not provided it defaults to current working directory.  
 `[module0,..,moduleN]`: Module paths relative to basePath.  
 `scope`: Main "busline".  
-  
+
 ## Test
  Run the tests
 ```bash
-    $ npm test 
+    $ npm test
 ```
 
 ## License
 Copyright (c) 2014 Ioannis Tzanellis<br>
-[Released under the MIT license](https://github.com/jahnestacado/hermes-bus/blob/master/LICENSE) 
+[Released under the MIT license](https://github.com/jahnestacado/hermes-bus/blob/master/LICENSE)
