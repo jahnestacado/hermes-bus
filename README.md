@@ -3,7 +3,9 @@
 [![downloads per month](http://img.shields.io/npm/dm/hermes-bus.svg)](https://www.npmjs.org/package/hermes-bus)
 [![Coverage Status](https://img.shields.io/coveralls/jahnestacado/hermes-bus.svg)](https://coveralls.io/r/jahnestacado/hermes-bus?branch=master)
 
-# hermes-bus
+![Logo](https://github.com/jahnestacado/hermes-bus/blob/master/images/hermes-bus-logo.240.png?raw=true)
+
+# hermes-bus 
 -----------
 Powerful event-emitter module for responsive bus architecture applications.
 ##### Features
