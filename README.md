@@ -103,15 +103,15 @@ In the example above we attach two asynchronous callback functions on the "async
 If we execute below code:
 ```javascript
     //Module3.js
-    var msg = "trigger event 'async' in ";
+    var msg = "triggered event 'async' in ";
     bus.triggerAsync(msg);
     console.log("all callbacks finished");
 ```
 we will get :  
 ```bash
   $ all callbacks finished   
-  $ trigger event 'async' in Module1.js  
-  $ trigger event 'async' in Module2.js  
+  $ triggered event 'async' in Module1.js  
+  $ triggered event 'async' in Module2.js  
  ```
 
 If we want to guarantee that all asynchronous callbacks attached to an event has been executed and then execute some code that depends on the state that the triggered event created, we need to "resolve" that event.  
